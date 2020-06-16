@@ -5,6 +5,26 @@
 
 #include "RoadNet.h"
 
+void RoadNet::AddEdge(unsigned int id1, unsigned int id2, float distance) {
+	std::unordered_map<unsigned int, std::unique_ptr<edges> >::const_iterator got;
+
+	got = graph.find(id1);
+
+	if (got == graph.end()) {
+		/* invalid. will throw exeption. can only create edge between existing nodes */
+	} else {
+		/* found the edge in the graph. the adjacency map is stored in parameter second */
+		got->second->insert(std::make_pair(id2, distance));
+	}
+}
+
+void RoadNet::AddNode(Node* node) {
+	nodes_meta.insert(std::make_pair(node->id, node));
+
+	edges* edge = new edges();
+	graph.insert(std::make_pair(node->id, edge));
+}
+
 RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 	std::string line, item;	
 
@@ -17,7 +37,7 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 		while (std::getline(nodefile, line)) {
 			std::stringstream ss (line);
 
-			Node* node = new Node();  /* will be converted to unique_ptr upon insertion */
+			Node* node = new Node();  /* will be converted to unique_ptr in AddNode */
 
 			std::getline(ss, item, ' ');
 			node->id = std::stoi(item);
@@ -28,7 +48,7 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 			std::getline(ss, item, ' ');
 			node->latitude = std::stof(item);
 
-			nodes_meta.insert(std::make_pair(node->id, node));
+			AddNode(node);
 		}
 	}
 
@@ -59,19 +79,4 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 	}
 
 	std::cout << "done" << std::endl;
-}
-
-void RoadNet::AddEdge(unsigned int id1, unsigned int id2, float distance) {
-	std::unordered_map<unsigned int, std::unique_ptr<edges> >::const_iterator got;
-
-	got = graph.find(id1);
-
-	if (got == graph.end()) {
-		/* need to make a new edge entry */
-		edges* edge = new edges();  /* will be converted to unique_ptr upon insertion */
-		edge->insert(std::make_pair(id2, distance));
-		graph.insert(std::make_pair(id1, edge));
-	} else {
-		got->second->insert(std::make_pair(id2, distance));
-	}
 }

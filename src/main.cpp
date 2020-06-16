@@ -3,10 +3,13 @@
 #include "RoadNet.h"
 
 int main() {
-	std::string dbnode = "cal_node.txt";
-	std::string dbedge = "cal_edge.txt";
+	/* these will become command line arguments */
+	std::string dbnodes = "cal_node.txt";
+	std::string dbedges = "cal_edge.txt";
 
-	RoadNet* x = new RoadNet(dbnode, dbedge);
+	RoadNet* x = new RoadNet(dbnodes, dbedges);
 
 	free(x);
+
+	return 0;
 }
