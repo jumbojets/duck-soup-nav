@@ -1,40 +1,47 @@
-TARGET    = ducksoup
-CPP       = g++
-STD       = -std=c++17
-WALL      = -Wall
-WPEDANTIC = -Wpedantic
-OPTIM     = -O3
-BIN       = -o
-INCDIR    = -I
-OBJ       = -c
-AFLAGS    = $(WALL) $(WPEDANTIC) ${STD} $(OPTIM) $(BIN)
-OFLAGS    = $(WALL) $(WPEDANTIC) ${STD} $(OPTIM) $(OBJ)
-LINK      = -lm
+project    = ducksoup
 
-all: main.o RoadNet.o
-	$(CPP) build/main.o build/RoadNet.o $(AFLAGS) $(TARGET) $(LINK)
-	mv $(TARGET) ./build
+CPP        = g++
+STD        = -std=c++17
+OPTIM      = -O3
 
-main.o: src/main.cpp directories
-	$(CPP) $(OFLAGS) $(INCDIR) include/$(TARGET) src/main.cpp
-	mv main.o ./build/
+src_dir    = ./src
+inc_dir    = ./include/${project}
+build_dir  = ./build
+bin_dir    = ${build_dir}/bin
+obj_dir    = ${build_dir}/obj
+build_dirs = ${obj_dir} ${bin_dir}
+sources    = $(wildcard ${src_dir}/*.cpp)
+objects    = $(subst .cpp,.o,$(subst ${src_dir},${obj_dir},${sources}))
+executable = ${bin_dir}/${project}
 
-RoadNet.o: src/RoadNet.cpp directories
-	$(CPP) $(OFLAGS) $(INCDIR) include/$(TARGET) src/RoadNet.cpp
-	mv RoadNet.o ./build/
+CFLAGS     = -Wall -Wpedantic ${STD} $(OPTIM)
+INC        = -I $(inc_dir)
 
-.PHONY: clean
+.PHONY: all run clean leak-test
+
+all: $(executable)
+
+run: $(executable)
+	@$(^)
+
+${executable}: ${objects} | ${bin_dir}
+	${CPP} ${CFLAGS} -o ${@} ${^}
+
+${obj_dir}/%.o: ${src_dir}/%.cpp | ${obj_dir}
+	${CPP} ${CFLAGS} ${INC} -c ${<} -o ${@}
+
+${build_dirs}:
+	mkdir -p ${@}
+
 clean:
-	rm -rf build/*
+	rm -rf $(build_dir)/*
 
-.PHONY: run
-run:
-	./build/$(TARGET)
-
-.PHONY: leak-test
 leak-test:
-	valgrind --leak-check=full --track-origins=yes ./build/$(TARGET)
+	valgrind --leak-check=full --track-origins=yes $(executable)
 
-.PHONY: directories
-directories:
-	mkdir -p build
+help:
+	@echo "Try one of the following make goals:"
+	@echo " * all - build project"
+	@echo " * run - execute the project"
+	@echo " * leak-check - begin a valgrind memory leak test"
+	@echo " * clean - delete build files in project"
