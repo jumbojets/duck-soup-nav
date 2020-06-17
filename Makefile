@@ -43,5 +43,5 @@ help:
 	@echo "Try one of the following make goals:"
 	@echo " * all - build project"
 	@echo " * run - execute the project"
-	@echo " * leak-check - begin a valgrind memory leak test"
 	@echo " * clean - delete build files in project"
+	@echo " * leak-test - begin a valgrind memory leak test"
