@@ -19,6 +19,7 @@ class BTree {
 		 *
 		 * @param graph_node - a shared pointer of the graph node to be wrapped and stored
 		 */
+
 		void insert(std::shared_ptr<GraphNode> graph_node);
 
 		/*
@@ -27,6 +28,7 @@ class BTree {
 		 * @param longitude - longitude of the point under search
 		 * @param latitude - latitude of the point under search
 		 */
+
 		unsigned int get_closest_node_id(float longitude, float latitude);
 
 	private:

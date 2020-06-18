@@ -3,6 +3,25 @@
 #include "btree.h"
 #include "misc.h"
 
+enum ChildCategory {
+	LNG_LT_LAT_LT,
+	LNG_GT_LAT_LT,
+	LNG_LT_LAT_GT,
+	LNG_GT_LAT_GT
+};
+
+ChildCategory get_child_category(float lng1, float lat1, float lng2, float lat2) {
+	if (lng1 <= lng2 && lat1 <= lat2) {
+		return LNG_LT_LAT_LT;
+	} else if (lng1 > lng2 && lat1 <= lat2) {
+		return LNG_GT_LAT_LT;
+	} else if (lng1 <= lng2 && lat1 > lat2) {
+		return LNG_LT_LAT_GT;
+	} else {
+		return LNG_GT_LAT_GT;
+	}
+}
+
 void BTree::insert(std::shared_ptr<GraphNode> graph_node) {
 	std::shared_ptr<TreeNode> new_node = std::make_shared<TreeNode>();
 	new_node->contents = graph_node;
@@ -21,30 +40,42 @@ void BTree::insert(std::shared_ptr<GraphNode> graph_node) {
 		float curr_lng = curr->contents->longitude;
 		float curr_lat = curr->contents->latitude;
 
-		if (new_lng <= curr_lng && new_lat <= curr_lat) {
-			if (curr->lng_lt_lat_lt == nullptr) {
-				curr->lng_lt_lat_lt = std::move(new_node);
-				return;
-			}
-			curr = curr->lng_lt_lat_lt;
-		} else if (new_lng > curr_lng && new_lat <= curr_lat) {
-			if (curr->lng_gt_lat_lt == nullptr) {
-				curr->lng_gt_lat_lt = std::move(new_node);
-				return;
-			}
-			curr = curr->lng_gt_lat_lt;
-		} else if (new_lng <= curr_lng && new_lat > curr_lat) {
-			if (curr->lng_lt_lat_gt == nullptr) {
-				curr->lng_lt_lat_gt = std::move(new_node);
-				return;
-			}
-			curr = curr->lng_lt_lat_gt;
-		} else {
-			if (curr->lng_gt_lat_gt == nullptr) {
-				curr->lng_gt_lat_gt = std::move(new_node);
-				return;
-			}
-			curr = curr->lng_gt_lat_gt;
+		ChildCategory cc = get_child_category(new_lng, new_lat, curr_lng, curr_lat);
+
+		switch (cc) {
+
+			case LNG_LT_LAT_LT:
+				if (curr->lng_lt_lat_lt == nullptr) {
+					curr->lng_lt_lat_lt = std::move(new_node);
+					return;
+				}
+				curr = curr->lng_lt_lat_lt;
+				break;
+
+			case LNG_GT_LAT_LT:
+				if (curr->lng_gt_lat_lt == nullptr) {
+					curr->lng_gt_lat_lt = std::move(new_node);
+					return;
+				}
+				curr = curr->lng_gt_lat_lt;
+				break;
+
+			case LNG_LT_LAT_GT:
+				if (curr->lng_lt_lat_gt == nullptr) {
+					curr->lng_lt_lat_gt = std::move(new_node);
+					return;
+				}
+				curr = curr->lng_lt_lat_gt;
+				break;
+
+			case LNG_GT_LAT_GT:
+				if (curr->lng_gt_lat_gt == nullptr) {
+					curr->lng_gt_lat_gt = std::move(new_node);
+					return;
+				}
+				curr = curr->lng_gt_lat_gt;
+				break;
+
 		}
 	}
 }
@@ -66,14 +97,24 @@ unsigned int BTree::get_closest_node_id(float lng, float lat) {
 			closest_distance = distance;
 		}
 
-		if (lng <= curr_lng && lat <= curr_lat) {
-			curr = curr->lng_lt_lat_lt;
-		} else if (lng > curr_lng && lat <= curr_lat) {
-			curr = curr->lng_gt_lat_lt;
-		} else if (lng <= curr_lng && lat > curr_lat) {
-			curr = curr->lng_lt_lat_gt;
-		} else {
-			curr = curr->lng_gt_lat_gt;
+		ChildCategory cc = get_child_category(lng, lat, curr_lng, curr_lat);
+
+		switch (cc) {
+
+			case LNG_LT_LAT_LT:
+				curr = curr->lng_lt_lat_lt;
+				break;
+
+			case LNG_GT_LAT_LT:
+				curr = curr->lng_gt_lat_lt;
+				break;
+
+			case LNG_LT_LAT_GT:
+				curr = curr->lng_lt_lat_gt;
+				break;
+
+			case LNG_GT_LAT_GT:
+				curr = curr->lng_gt_lat_gt;
 		}
 	}
 

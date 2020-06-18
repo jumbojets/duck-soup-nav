@@ -12,6 +12,7 @@
  * struct used by a* to represent a node. it has the ability to be
  * sorted and used in a set by picking the minimum f value
  */
+
 struct visitedlocation {
 	unsigned int id;
 	float f;
