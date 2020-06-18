@@ -3,9 +3,24 @@
 
 #include <unordered_map>
 #include <memory>
+#include <vector>
 
 #include "btree.h"
 #include "misc.h"
+
+/* 
+ * struct used by a* to represent a node. it has the ability to be
+ * sorted and used in a set by picking the minimum f value
+ */
+struct visitedlocation {
+	unsigned int id;
+	float f;
+	float g;
+	visitedlocation *parent;
+	bool operator<(const visitedlocation& rhs) const {
+		return f < rhs.f;
+	}
+};
 
 /*
  * the type Edges is an adjacency map for the edges of each node
@@ -35,6 +50,20 @@ class RoadNet {
 
 		RoadNet(std::string dbnodes, std::string dbedges);
 
+		/*
+		 * Using a* search algorithm to compute and return a path to take to
+		 * get from start location ot destination. It currently has a
+		 * segmentation fault.
+		 *
+		 * @param lng_start - longitude of starting location
+		 * @param lat_start - latitude of starting location
+		 * @param lng_dest - longtiude of destination
+		 * @param lat_dest - latitude of destination
+		 * @return path - vector of GraphNodes that represent the path computed
+		 */
+
+		std::vector<std::shared_ptr<GraphNode> > route(float lng_start, float lat_start, float lng_dest, float lat_dest);
+
 	private:
 
 		Graph graph;           /* in memory graph data structure */		
@@ -59,6 +88,16 @@ class RoadNet {
 		 */
 
 		void add_node(std::shared_ptr<GraphNode> node);
+
+		/*
+		 * Builds a path of GraphNodes from a final node. It traverses backward from
+		 * each visitedlocation's parent node
+		 *
+		 * @param node - the final node to traverse backwards from
+		 * @return path - the generated path
+		 */
+
+		std::vector<std::shared_ptr<GraphNode> > build_path(visitedlocation *node);
 };
 
 #endif
