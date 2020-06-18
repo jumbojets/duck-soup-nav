@@ -29,8 +29,8 @@ struct visitedlocation {
 */
 
 typedef std::unordered_map<unsigned int, float> Edges;
-typedef std::unordered_map<unsigned int, std::unique_ptr<Edges> > Graph;
-typedef std::unordered_map<unsigned int, std::shared_ptr<GraphNode> > NodesMeta;
+typedef std::vector<std::shared_ptr<Edges> > Graph;
+typedef std::vector<std::shared_ptr<GraphNode> > NodesMeta;
 
 /*
  * RoadNet stores a road network for a given region as a graph in memory
@@ -52,8 +52,7 @@ class RoadNet {
 
 		/*
 		 * Using a* search algorithm to compute and return a path to take to
-		 * get from start location ot destination. It currently has a
-		 * segmentation fault.
+		 * get from start location to destination.
 		 *
 		 * @param lng_start - longitude of starting location
 		 * @param lat_start - latitude of starting location

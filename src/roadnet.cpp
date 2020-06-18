@@ -10,7 +10,7 @@
 RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 	std::string line, item;	
 
-	std::cout << "loading nodes from " << dbnodes << "... ";
+	std::cout << "loading nodes from " << dbnodes << "..." << std::endl;;
 
 	std::ifstream nodefile (dbnodes);
 
@@ -37,15 +37,15 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 		exit(1);
 	}
 
-	std::cout << "done" << std::endl;
+	graph.shrink_to_fit();  /* dont need to add anymore */
 
-	std::cout << "loading edges from " << dbedges << "... ";
+	std::cout << "loading edges from " << dbedges << "..." << std::endl;
 
 	std::ifstream edgefile (dbedges);
 
 	if (edgefile.is_open()) {
 
-		while (std::getline(nodefile, line)) {
+		while (std::getline(edgefile, line)) {
 			std::stringstream ss (line);
 
 			std::getline(ss, item, ' ');  /* skip the edge id--we dont need it */
@@ -55,8 +55,12 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 			std::getline(ss, item, ' ');
 			unsigned int id2 = std::stoi(item);
 
-			std::getline(ss, item, ' ');
-			float distance = std::stof(item);
+			float lng1 = nodes_meta[id1]->longitude;
+			float lat1 = nodes_meta[id1]->latitude;
+			float lng2 = nodes_meta[id2]->longitude;
+			float lat2 = nodes_meta[id2]->latitude;
+
+			float distance = compute_distance(lng1, lat1, lng2, lat2);
 
 			add_edge(id1, id2, distance);
 			add_edge(id2, id1, distance);
@@ -66,18 +70,18 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 		exit(1);
 	}
 
-	std::cout << "done" << std::endl;
+	nodes_meta.shrink_to_fit();  /* don't need to add anymore */
 
-	std::cout << "proprogating the btree... ";
+	std::cout << "proprogating the btree... " << std::endl;
 
-	for (const auto & [ _, node ] : nodes_meta) {
+	for (auto const & node : nodes_meta)
 		tree.insert(node);
-	}
 
-	std::cout << "done" << std::endl;
 }
 
 std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float lat_start, float lng_dest, float lat_dest) {
+	std::cout << "running routing algorithm... " << std::endl;
+
 	unsigned int start_node_id = tree.get_closest_node_id(lng_start, lat_start);
 	unsigned int dest_node_id = tree.get_closest_node_id(lng_dest, lat_dest);
 
@@ -100,13 +104,7 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 		if (curr->id == dest_node_id)
 			break;
 
-		/* loop over all edges */
-
-		std::cout << graph.size() << std::endl;
-
-		for (const auto & [ next_id, distance ] : *graph[curr->id]) {
-			std::cout << next_id << std::endl;
-
+		for (auto const & [ next_id, distance ] : *graph[curr->id]) {
 			visitedlocation *successor = new visitedlocation();
 			successor->id = next_id;
 			successor->parent = curr;
@@ -159,22 +157,11 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 }
 
 void RoadNet::add_edge(unsigned int id1, unsigned int id2, float distance) {
-	std::unordered_map<unsigned int, std::unique_ptr<Edges> >::const_iterator got;
-
-	got = graph.find(id1);
-
-	if (got == graph.end()) {
-		std::cout << "Error: Bad edges file! Cannot add edge when node id does not already exist: " << id1 << std::endl;
-		exit(1);
-	} else {
-		/* found the edge in the graph. the adjacency map is stored in parameter second */
-		got->second->insert(std::make_pair(id2, distance));
-	}
+	graph[id1]->insert(std::make_pair(id2, distance));
 }
 
 void RoadNet::add_node(std::shared_ptr<GraphNode> node) {
-	nodes_meta.insert(std::make_pair(node->id, node));
-
+	nodes_meta.push_back(std::move(node));
 
 	/* 
 	 * This will be prefered when we have self balancing in the btree.
@@ -184,8 +171,8 @@ void RoadNet::add_node(std::shared_ptr<GraphNode> node) {
 	 */
 	// tree.insert(node);
 
-	Edges *edge = new Edges();
-	graph.insert(std::make_pair(node->id, edge));
+	std::shared_ptr<Edges> edge = std::make_shared<Edges>();
+	graph.push_back(std::move(edge));
 }
 
 std::vector<std::shared_ptr<GraphNode> > RoadNet::build_path(visitedlocation *node) {
@@ -195,6 +182,7 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::build_path(visitedlocation *no
 		/* get the corresponding graph node with all important information */
 		std::shared_ptr<GraphNode> out = nodes_meta[node->id];
 		path.push_back(out);
+		node = node->parent;
 	}
 
 	/* reverse because we intially started at the end */
