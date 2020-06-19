@@ -16,9 +16,9 @@ typedef struct GraphNode {
 } GraphNode;
 
 /*
- * The struct TreeNode is a node for the tree BTree. It wraps a GraphNode which
+ * The struct TreeNode is a node for the tree RTree. It wraps a GraphNode which
  * has the unique information about the node on the graph (id, latitude, longitude).
- * This simply manages position in the b-tree
+ * This simply manages position in the r-tree
  */
 
 typedef struct TreeNode {

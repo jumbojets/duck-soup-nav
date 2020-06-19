@@ -74,7 +74,7 @@ RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 
 	nodes_meta.shrink_to_fit();  /* don't need to add anymore */
 
-	std::cout << "proprogating the btree... " << std::endl;
+	std::cout << "proprogating the rtree... " << std::endl;
 
 	for (auto const & node : nodes_meta)
 		tree.insert(node);
@@ -166,7 +166,7 @@ void RoadNet::add_node(std::shared_ptr<GraphNode> node) {
 	nodes_meta.push_back(std::move(node));
 
 	/* 
-	 * This will be prefered when we have self balancing in the btree.
+	 * This will be prefered when we have self balancing in the rtree.
 	 * Currently, insertion into the btree occurs at the end of the
 	 * RoadNet constructor by iterating throught he hashmap, ensuring some
 	 * sort of 'randomness' while inserting, making it generally balanced

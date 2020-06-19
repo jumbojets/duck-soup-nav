@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "btree.h"
+#include "rtree.h"
 #include "misc.h"
 
 /* 
@@ -68,7 +68,7 @@ class RoadNet {
 
 		Graph graph;           /* in memory graph data structure */		
 		NodesMeta nodes_meta;  /* accessor for node struct by id */
-		BTree tree;            /* b-tree for searching nearest node based on coordinates */
+		RTree tree;            /* r-tree for searching nearest node based on coordinates */
 
 		/*
 		 * add_edge creates an edge between two nodes, adding id2 to the

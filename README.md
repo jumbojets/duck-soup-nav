@@ -1,6 +1,6 @@
 # duck-soup-nav
 
-duck-soup-nav is a project that finds the shortest path between two points of longitude and latitude using data for road networks. It uses the A* searching algorithm to find the special route and a BTree to find the nearest node to a pair of coordinates. I'll explain the algorithmic decisions I made more in depth as the project progresses. Eventually, I hope to make this an api where duck-soup-nav takes https post requests and returns the path.
+duck-soup-nav is a project that finds the shortest path between two points of longitude and latitude using data for road networks. It uses the A* searching algorithm to find the special route and a RTree to find the nearest node to a pair of coordinates. I'll explain the algorithmic decisions I made more in depth as the project progresses. Eventually, I hope to make this an api where duck-soup-nav takes https post requests and returns the path.
 
 ### Build
 

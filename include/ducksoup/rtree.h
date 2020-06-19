@@ -1,18 +1,18 @@
-#ifndef BTREE_H
-#define BTREE_H
+#ifndef RTREE_H
+#define RTREE_H
 
 #include "misc.h"
 
 /*
- * The class BTree is used for lookup to determine the nearest node to a specific
+ * The class RTree is used for lookup to determine the nearest node to a specific
  * latitude and longitude pair. It performs self balancing after insertion.
  */
 
-class BTree {
+class RTree {
 	public:
 
 		/*
-		 * insert adds a new TreeNode to the BTree by traversing to where there is
+		 * insert adds a new TreeNode to the RTree by traversing to where there is
 		 * an free spot to be placed. It uses the longitude and latitude of the
 		 * underlying wraped graph node to index it in the best spot. Note that currently
 		 * it does not implement self-balancing.

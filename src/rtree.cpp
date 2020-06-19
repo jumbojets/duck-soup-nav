@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "btree.h"
+#include "rtree.h"
 #include "misc.h"
 
 enum ChildCategory {
@@ -22,7 +22,7 @@ ChildCategory get_child_category(float lng1, float lat1, float lng2, float lat2)
 	}
 }
 
-void BTree::insert(std::shared_ptr<GraphNode> graph_node) {
+void RTree::insert(std::shared_ptr<GraphNode> graph_node) {
 	std::shared_ptr<TreeNode> new_node = std::make_shared<TreeNode>();
 	new_node->contents = graph_node;
 
@@ -80,7 +80,7 @@ void BTree::insert(std::shared_ptr<GraphNode> graph_node) {
 	}
 }
 
-unsigned int BTree::get_closest_node_id(float lng, float lat) {
+unsigned int RTree::get_closest_node_id(float lng, float lat) {
 	std::shared_ptr<TreeNode> curr = root;
 
 	unsigned int closest_id = root->contents->id;
