@@ -87,11 +87,14 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 	unsigned int start_node_id = tree.get_closest_node_id(lng_start, lat_start);
 	unsigned int dest_node_id = tree.get_closest_node_id(lng_dest, lat_dest);
 
-	std::set<visitedlocation*> openlist;  /* this will emulate a priority queue */
-	std::unordered_map<unsigned int, visitedlocation*> openlist_id_map;  /* so we can find the item in the openset based on id */
-	std::unordered_map<unsigned int, visitedlocation*> closedlist;
+	std::set<std::shared_ptr<visitedlocation>> openlist;  /* this will emulate a priority queue */
+	std::unordered_map<unsigned int, std::shared_ptr<visitedlocation>> openlist_id_map;  /* so we can find the item in the openset based on id */
+	std::unordered_map<unsigned int, std::shared_ptr<visitedlocation>> closedlist;
 
-	visitedlocation *curr = new visitedlocation{start_node_id, 0, 0};
+	std::shared_ptr<visitedlocation> curr = std::make_shared<visitedlocation>();
+	curr->id = start_node_id;
+	curr->g = 0;
+	curr->f = 0;
 
 	openlist.insert(curr);
 	openlist_id_map.insert(std::make_pair(start_node_id, curr));
@@ -107,9 +110,9 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 			break;
 
 		for (auto const & [ next_id, distance ] : *graph[curr->id]) {
-			visitedlocation *successor = new visitedlocation();
+			std::shared_ptr<visitedlocation> successor = std::make_shared<visitedlocation>();
 			successor->id = next_id;
-			successor->parent = curr;
+			successor->parent = curr.get();
 			successor->g = successor->parent->g + distance;
 
 			std::shared_ptr<GraphNode> n = nodes_meta[curr->id];
@@ -120,12 +123,11 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 
 			successor->f = successor->g + h;
 
-			/* skip if this node is already in the open set and has smaller */
+			/* skip if this node is already in the open set and has smaller f */
 
 			auto got = openlist_id_map.find(successor->id);
 
 			if (got != openlist_id_map.end() && got->second->f < successor->f) {
-				free(successor);
 				continue;
 			}
 
@@ -134,7 +136,6 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 			got = closedlist.find(successor->id);
 
 			if (got != closedlist.end() && got->second->f < successor->f) {
-				free(successor);
 				continue;
 			}
 
@@ -145,15 +146,7 @@ std::vector<std::shared_ptr<GraphNode> > RoadNet::route(float lng_start, float l
 	}
 
 	/* final node is stored in curr. trace back and build the path */
-	std::vector<std::shared_ptr<GraphNode> > path = build_path(curr);
-
-	/* free all variables in openlist and closedlist */
-
-	for (auto f : openlist)
-		free(f);
-
-	for (const auto & [ _, f ] : closedlist)
-		free(f);
+	std::vector<std::shared_ptr<GraphNode> > path = build_path(curr.get());
 
 	return path;
 }
