@@ -1,0 +1,9 @@
+# paths to the nodes and edges data
+
+nodes     cal_node.txt
+edges     cal_edge.txt
+
+# network settings (these don't do anything yet)
+
+ipaddr    127.0.0.1
+port      7999

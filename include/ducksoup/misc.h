@@ -1,7 +1,7 @@
-#include <memory>
-
 #ifndef MISC_H
 #define MISC_H
+
+#include <memory>
 
 /*
  * The struct GraphNode represents a node on the RoadNet. There is an unique 
