@@ -4,7 +4,9 @@
 
 #include "config.h"
 
-enum Keys {
+/* represents the key found on each line */
+
+enum Key {
 	Invalid,
 	NodesPath,
 	EdgesPath,
@@ -12,17 +14,32 @@ enum Keys {
 	Port,
 };
 
-Keys resolveKey(std::string input) {
-	if (input == "nodes")
+/*
+ * resolves a string key found as the enum Key
+ *
+ * @param key - key as string found in the config file
+ * @return Key - resolved key as an enum
+ */
+
+Key resolve_key(std::string key) {
+	if (key == "nodes")
 		return NodesPath;
-	else if (input == "edges")
+	else if (key == "edges")
 		return EdgesPath;
-	else if (input == "ipaddr")
+	else if (key == "ipaddr")
 		return IpAddress;
-	else if (input == "port")
+	else if (key == "port")
 		return Port;
 	return Invalid;
 }
+
+/*
+ * removes unnecesary whitespace on each line to enable splitting the key 
+ * and value on single spaces
+ *
+ * @param input - a line of the config file
+ * @return out - the same line with redundant whitespace removed
+ */
 
 std::string remove_extra_whitespace(const std::string input) {
 	std::string out;
@@ -54,7 +71,7 @@ Config parse_config() {
 			std::getline(ss, key, ' ');
 			std::getline(ss, value, ' ');
 
-			switch (resolveKey(key)) {
+			switch (resolve_key(key)) {
 				case Invalid:
 					std::cout << "Error: Received invalid key: " << key << std::endl;
 					exit(1);

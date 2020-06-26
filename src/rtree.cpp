@@ -3,6 +3,12 @@
 #include "rtree.h"
 #include "misc.h"
 
+/*
+ * represents the type of child a certain node pertains two with
+ * respect to the current parent. LNG / LAT stands for longitude /
+ * latitude and LT / GT stands for less than / greater than.
+ */
+
 enum ChildCategory {
 	LNG_LT_LAT_LT,
 	LNG_GT_LAT_LT,
@@ -10,7 +16,17 @@ enum ChildCategory {
 	LNG_GT_LAT_GT
 };
 
-ChildCategory get_child_category(float lng1, float lat1, float lng2, float lat2) {
+/*
+ * resolves a comparison of two pairs of coordinates as the enum ChildCategory
+ *
+ * @param lng1 - longitude of first point in decimal format
+ * @param lat1 - latitude of first point in decimal format
+ * @param lng2 - longitude of second point in decimal format
+ * @param lat2 - latitude of second point in decimal format
+ * @return Key - resolved key as an enum
+ */
+
+ChildCategory resolve_child_category(float lng1, float lat1, float lng2, float lat2) {
 	if (lng1 <= lng2 && lat1 <= lat2) {
 		return LNG_LT_LAT_LT;
 	} else if (lng1 > lng2 && lat1 <= lat2) {
@@ -40,7 +56,7 @@ void RTree::insert(std::shared_ptr<GraphNode> graph_node) {
 		float curr_lng = curr->contents->longitude;
 		float curr_lat = curr->contents->latitude;
 
-		ChildCategory cc = get_child_category(new_lng, new_lat, curr_lng, curr_lat);
+		ChildCategory cc = resolve_child_category(new_lng, new_lat, curr_lng, curr_lat);
 
 		switch (cc) {
 
@@ -97,7 +113,7 @@ unsigned int RTree::get_closest_node_id(float lng, float lat) {
 			closest_distance = distance;
 		}
 
-		ChildCategory cc = get_child_category(lng, lat, curr_lng, curr_lat);
+		ChildCategory cc = resolve_child_category(lng, lat, curr_lng, curr_lat);
 
 		switch (cc) {
 

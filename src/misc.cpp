@@ -4,12 +4,24 @@
 
 #define EARTH_RADIUS 6371.0
 
-/* converts degrees to radians */
+/*
+ * converts degrees to radians
+ *
+ * @param deg - angle as degrees
+ * @param rad - angle as radians
+ */
+
 inline float deg2rad(float deg) {
 	return (deg * M_PI / 180);
 }
 
-/* converts radians to degrees */
+/*
+ * converts radians to degrees
+ *
+ * @param rad - angle as radians
+ * @param deg - angle as degrees
+ */
+
 inline float rad2deg(float rad) {
 	return (rad * 180 / M_PI);
 }

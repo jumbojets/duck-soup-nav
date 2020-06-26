@@ -37,6 +37,7 @@ typedef struct TreeNode {
  * @param lng2d - longitude of second point in decimal format
  * @param lat2d - latitude of second point in decimal format
  */
+
 float compute_distance(float lng1d, float lat1d, float lng2d, float lat2d);
 
 #endif
