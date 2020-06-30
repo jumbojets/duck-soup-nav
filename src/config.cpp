@@ -48,59 +48,63 @@ std::string remove_extra_whitespace(const std::string input) {
 	return out;
 }
 
-Config parse_config() {
-	Config config;
+namespace ducksoup {
 
-	std::ifstream configfile ("duck.cnf");
+	Config parse_config() {
+		Config config;
 
-	std::string line, key, value;
+		std::ifstream configfile ("duck.cnf");
 
-	if (configfile.is_open()) {
+		std::string line, key, value;
 
-		while (std::getline(configfile, line)) {
-			line = remove_extra_whitespace(line);
+		if (configfile.is_open()) {
 
-			if (line[0] == '#' || line[1] == '#')
-				continue;
+			while (std::getline(configfile, line)) {
+				line = remove_extra_whitespace(line);
 
-			std::stringstream ss (line);
+				if (line[0] == '#' || line[1] == '#')
+					continue;
 
-			if (line == "")
-				continue;
+				std::stringstream ss (line);
 
-			std::getline(ss, key, ' ');
-			std::getline(ss, value, ' ');
+				if (line == "")
+					continue;
 
-			switch (resolve_key(key)) {
-				case Invalid:
-					std::cout << "Error: Received invalid key: " << key << std::endl;
-					exit(1);
+				std::getline(ss, key, ' ');
+				std::getline(ss, value, ' ');
 
-				case NodesPath:
-					config.nodes_path = value;
-					break;
+				switch (resolve_key(key)) {
+					case Invalid:
+						std::cout << "Error: Received invalid key: " << key << std::endl;
+						exit(1);
 
-				case EdgesPath:
-					config.edges_path = value;
-					break;
+					case NodesPath:
+						config.nodes_path = value;
+						break;
 
-				case IpAddress:
-					config.ip_address = value;
-					break;
+					case EdgesPath:
+						config.edges_path = value;
+						break;
 
-				case Port:
-					config.port = std::stoi(value);
-					break;
+					case IpAddress:
+						config.ip_address = value;
+						break;
+
+					case Port:
+						config.port = std::stoi(value);
+						break;
+				}
+
 			}
 
+		} else {
+			std::cout << "Error: Could not open config file: duck.cnf" << std::endl;
+			exit(1);
 		}
 
-	} else {
-		std::cout << "Error: Could not open config file: duck.cnf" << std::endl;
-		exit(1);
+		// panic if there a field in the config file does not exist
+
+		return config;
 	}
 
-	// panic if there a field in the config file does not exist
-
-	return config;
 }

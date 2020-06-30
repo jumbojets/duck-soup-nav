@@ -26,14 +26,19 @@ inline float rad2deg(float rad) {
 	return (rad * 180 / M_PI);
 }
 
-float compute_distance(float lng1d, float lat1d, float lng2d, float lat2d) {
-	float lng1r = deg2rad(lng1d);
-	float lat1r = deg2rad(lat1d);
-	float lng2r = deg2rad(lng2d);
-	float lat2r = deg2rad(lat2d);
+namespace ducksoup {
 
-	float u = sin((lat2r - lat1r) / 2);
-	float v = sin((lng2r - lng1r) / 2);
+	float compute_distance(float lng1d, float lat1d, float lng2d, float lat2d) {
+		float lng1r = deg2rad(lng1d);
+		float lat1r = deg2rad(lat1d);
+		float lng2r = deg2rad(lng2d);
+		float lat2r = deg2rad(lat2d);
 
-	return 2.0 * EARTH_RADIUS * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v));
+		float u = sin((lat2r - lat1r) / 2);
+		float v = sin((lng2r - lng1r) / 2);
+
+		return 2.0 * EARTH_RADIUS * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v));
+	}
+	
 }
+

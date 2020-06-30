@@ -9,9 +9,9 @@ using json = nlohmann::json;
 
 int main() {
 
-	Config config = parse_config();
+	ducksoup::Config config = ducksoup::parse_config();
 
-	RoadNet net = RoadNet(config.nodes_path, config.edges_path);
+	ducksoup::RoadNet net = ducksoup::RoadNet(config.nodes_path, config.edges_path);
 
 	std::cout << "setting up server..." << std::endl;
 
