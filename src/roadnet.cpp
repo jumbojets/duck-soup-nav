@@ -7,7 +7,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include "roadnet.h"
+#include "ducksoup/roadnet.h"
 
 RoadNet::RoadNet(std::string dbnodes, std::string dbedges) {
 	std::string line, item;	

@@ -5,8 +5,7 @@ STD          = -std=c++17
 OPTIM        = -O3
 
 src_dir      = ./src
-inc_dir      = ./include/$(project)
-http_inc_dir = ./include/cpp-httplib
+inc_dir      = ./include
 build_dir    = ./build
 bin_dir      = ${build_dir}/bin
 obj_dir      = ${build_dir}/obj
@@ -16,7 +15,7 @@ objects      = $(subst .cpp,.o,$(subst ${src_dir},${obj_dir},${sources}))
 executable   = ${bin_dir}/${project}
 
 CFLAGS       = -Wall -Wpedantic ${STD} $(OPTIM)
-INC          = -I $(inc_dir) -I ${http_inc_dir}
+INC          = -I $(inc_dir)
 
 .PHONY: all run clean leak-test
 

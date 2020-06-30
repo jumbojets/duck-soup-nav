@@ -1,8 +1,11 @@
 #include <iostream>
 
-#include "config.h"
-#include "roadnet.h"
-#include "httplib.hpp"
+#include "ducksoup/config.h"
+#include "ducksoup/roadnet.h"
+#include "cpp-httplib/httplib.hpp"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 int main() {
 

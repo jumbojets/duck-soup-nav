@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "config.h"
+#include "ducksoup/config.h"
 
 /* represents the key found on each line */
 

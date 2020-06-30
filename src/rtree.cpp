@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "rtree.h"
-#include "misc.h"
+#include "ducksoup/rtree.h"
+#include "ducksoup/misc.h"
 
 /*
  * represents the type of child a certain node pertains two with

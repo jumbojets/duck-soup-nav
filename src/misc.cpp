@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "misc.h"
+#include "ducksoup/misc.h"
 
 #define EARTH_RADIUS 6371.0
 
