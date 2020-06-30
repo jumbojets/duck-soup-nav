@@ -78,15 +78,19 @@ Config parse_config() {
 
 				case NodesPath:
 					config.nodes_path = value;
+					break;
 
 				case EdgesPath:
 					config.edges_path = value;
+					break;
 
 				case IpAddress:
 					config.ip_address = value;
+					break;
 
 				case Port:
-					config.port = value;
+					config.port = std::stoi(value);
+					break;
 			}
 
 		}

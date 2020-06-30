@@ -1,21 +1,22 @@
-project    = ducksoup
+project      = ducksoup
 
-CPP        = g++
-STD        = -std=c++17
-OPTIM      = -O3
+CPP          = g++
+STD          = -std=c++17
+OPTIM        = -O3
 
-src_dir    = ./src
-inc_dir    = ./include/${project}
-build_dir  = ./build
-bin_dir    = ${build_dir}/bin
-obj_dir    = ${build_dir}/obj
-build_dirs = ${obj_dir} ${bin_dir}
-sources    = $(wildcard ${src_dir}/*.cpp)
-objects    = $(subst .cpp,.o,$(subst ${src_dir},${obj_dir},${sources}))
-executable = ${bin_dir}/${project}
+src_dir      = ./src
+inc_dir      = ./include/$(project)
+http_inc_dir = ./include/cpp-httplib
+build_dir    = ./build
+bin_dir      = ${build_dir}/bin
+obj_dir      = ${build_dir}/obj
+build_dirs   = ${obj_dir} ${bin_dir}
+sources      = $(wildcard ${src_dir}/*.cpp)
+objects      = $(subst .cpp,.o,$(subst ${src_dir},${obj_dir},${sources}))
+executable   = ${bin_dir}/${project}
 
-CFLAGS     = -Wall -Wpedantic ${STD} $(OPTIM)
-INC        = -I $(inc_dir)
+CFLAGS       = -Wall -Wpedantic ${STD} $(OPTIM)
+INC          = -I $(inc_dir) -I ${http_inc_dir}
 
 .PHONY: all run clean leak-test
 

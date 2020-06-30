@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "roadnet.h"
+#include "httplib.hpp"
 
 int main() {
 
@@ -24,6 +25,18 @@ int main() {
 	}
 
 	std::cout << std::endl;
+
+	std::cout << "setting up server..." << std::endl;
+
+	httplib::Server svr;
+
+	svr.Post("/route", [&](const httplib::Request &req, httplib::Response &res) {
+		res.set_content(req.body, "application/json");
+	});
+
+	std::cout << "listening on " << config.ip_address << ":" << config.port << "..." << std::endl;
+
+	svr.listen(config.ip_address.c_str(), config.port);
 
 	return 0;
 }
