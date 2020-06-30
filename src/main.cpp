@@ -20,7 +20,7 @@ int main() {
 	svr.Post("/route", [&](const httplib::Request &req, httplib::Response &res) {
 		auto body = json::parse(req.body);
 
-		auto path = net.route(body["lng_start"], body["lat_start"], body["lng_dest"], body["lat_dest"]);
+		auto path = net.route(body["start"][0], body["start"][1], body["destination"][0], body["destination"][1]);
 
 		json ret;
 
