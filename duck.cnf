@@ -3,7 +3,7 @@
 nodes     cal_node.txt
 edges     cal_edge.txt
 
-# network settings (these don't do anything yet)
+# network settings
 
-ipaddr    127.0.0.1
+hostname  127.0.0.1
 port      7999

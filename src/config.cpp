@@ -10,7 +10,7 @@ enum Key {
 	Invalid,
 	NodesPath,
 	EdgesPath,
-	IpAddress,
+	Hostname,
 	Port,
 };
 
@@ -26,8 +26,8 @@ Key resolve_key(std::string key) {
 		return NodesPath;
 	else if (key == "edges")
 		return EdgesPath;
-	else if (key == "ipaddr")
-		return IpAddress;
+	else if (key == "hostname")
+		return Hostname;
 	else if (key == "port")
 		return Port;
 	return Invalid;
@@ -86,8 +86,8 @@ namespace ducksoup {
 						config.edges_path = value;
 						break;
 
-					case IpAddress:
-						config.ip_address = value;
+					case Hostname:
+						config.hostname = value;
 						break;
 
 					case Port:

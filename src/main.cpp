@@ -34,9 +34,9 @@ int main() {
 		res.set_content(ret.dump(), "application/json");
 	});
 
-	std::cout << "listening on " << config.ip_address << ":" << config.port << "..." << std::endl;
+	std::cout << "listening on " << config.hostname << ":" << config.port << "..." << std::endl;
 
-	svr.listen(config.ip_address.c_str(), config.port);
+	svr.listen(config.hostname.c_str(), config.port);
 
 	return 0;
 }
