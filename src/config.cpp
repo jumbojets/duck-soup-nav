@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 
 #include "ducksoup/config.h"
 
@@ -48,6 +49,27 @@ std::string remove_extra_whitespace(const std::string input) {
 	return out;
 }
 
+/*
+ * uses the config's fields found encoding to determine if a field is missing
+ *
+ * @param fields_found_enc - the fields found encoding
+ * @return null_field - the first missing field (nullptr if none are missing)
+ */
+
+const char* validate_fields(short fields_found_enc) {
+	if (fields_found_enc % 2 == 0) {
+		return "nodes";
+	} else if (fields_found_enc / 2 % 2 == 0) {
+		return "edges";
+	} else if (fields_found_enc / 4 % 2 == 0) {
+		return "hostname";
+	} else if (fields_found_enc / 8 % 2 == 0) {
+		return "port";
+	} else {
+		return nullptr;
+	}
+}
+
 namespace ducksoup {
 
 	Config parse_config() {
@@ -56,6 +78,8 @@ namespace ducksoup {
 		std::ifstream configfile ("duck.cnf");
 
 		std::string line, key, value;
+
+		short fields_found_enc = 0;
 
 		if (configfile.is_open()) {
 
@@ -73,7 +97,9 @@ namespace ducksoup {
 				std::getline(ss, key, ' ');
 				std::getline(ss, value, ' ');
 
-				switch (resolve_key(key)) {
+				short resolved_key = resolve_key(key);
+
+				switch (resolved_key) {
 					case Invalid:
 						std::cout << "Error: Received invalid key: " << key << std::endl;
 						exit(1);
@@ -95,6 +121,8 @@ namespace ducksoup {
 						break;
 				}
 
+				fields_found_enc += pow(2, resolved_key - 1);
+
 			}
 
 		} else {
@@ -102,7 +130,13 @@ namespace ducksoup {
 			exit(1);
 		}
 
-		// panic if there a field in the config file does not exist
+		// ensure that we have all of the neccesary fields
+		const char *null_field = validate_fields(fields_found_enc);
+
+		if (null_field != nullptr) {
+			std::cout << "Error: Could not find in the config file the key: " << null_field << std::endl;
+			exit(1);
+		}
 
 		return config;
 	}
