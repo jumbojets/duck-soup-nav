@@ -121,7 +121,8 @@ namespace ducksoup {
 						break;
 				}
 
-				fields_found_enc += pow(2, resolved_key - 1);
+				// add to the bit encoding
+				fields_found_enc += 1 << (resolved_key - 1);
 
 			}
 

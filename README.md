@@ -22,6 +22,12 @@ Now the server will be running under the address and port you specified in `duck
 
 Also, unfortunately, things are a bit slow right now if they points to compute the route between are far away! Computing A* is not easy, and I have not experimented with finding a good heuristic yet or possibly using a different algorithm than A* search. Optimizations will come soon! :)
 
+### Next plans
+
+* Make the r-tree self balancing (this will reduce the height of the tree from over 200 to around 8)
+* Find a differents routing algorithm that perhaps use a cross pollination of A* and other algorithms. (Think using the r-tree)
+* Try different A* heuristics
+
 ### Usage
 
 To use the basic routing algorithm, make a post request at the route `/route`. Pass into the body an json object with keys `"start"` and `"destination"` that both correspond to an array of length two that contains longitude and latitude at index 0 and 1 respectively. The response will be an array of length 2 arrays that contain longitude and latitude at index 0 and 1.
