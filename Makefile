@@ -1,8 +1,8 @@
-project      = ducksoup
+project   = ducksoup
 
 CPP          = g++
 STD          = -std=c++17
-OPTIM        = -O3
+OPTIM        = -O2
 
 src_dir      = ./src
 inc_dir      = ./include

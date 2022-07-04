@@ -52,7 +52,7 @@ void RTree::insert(std::shared_ptr<GraphNode> graph_node) {
 
     std::shared_ptr<TreeNode> curr = root;
 
-    while (true) {
+    for (;;) {
         float curr_lng = curr->contents->longitude;
         float curr_lat = curr->contents->latitude;
 
@@ -90,7 +90,6 @@ void RTree::insert(std::shared_ptr<GraphNode> graph_node) {
                 }
                 curr = curr->lng_gt_lat_gt;
                 break;
-
         }
     }
 }
